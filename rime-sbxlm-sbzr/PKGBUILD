@@ -1,0 +1,23 @@
+pkgname=rime-sbxlm-sbzr
+pkgver=2204017
+pkgrel=1
+pkgdesc='声笔系列码，声笔自然'
+arch=(any)
+source=("https://gitee.com/sbxlm/sbxlm/attach_files/1032169/download/$pkgver.zip")
+sha256sums=('84a8a113a05173eead7265465672e37f0b1b4e82c5188f69debb135085dc8476')
+depends=('rime-sbxlm')
+groups=(sbxlm)
+
+prepare() {
+  cd $srcdir
+  sed -i 's/import_preset: symbols/import_preset: sbxlm-symbols/g' *.schema.yaml
+}
+
+package() {
+  mkdir -p $pkgdir/usr/share/sbxlm/init-userdb
+  cd $srcdir
+  tar czf $pkgdir/usr/share/sbxlm/init-userdb/$pkgname.tar.gz *.userdb
+  cp -r $srcdir/ $pkgdir/usr/share/rime-data/
+  rm -rf $pkgdir/usr/share/rime-data/{*.userdb,$pkgver.zip}
+  chmod 755 $pkgdir/usr/share/rime-data/
+}
